@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>اختبار الفيزياء الفولاذي - الفصل الأول كامل (100 سؤال) ⚡</title>
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Tajawal', sans-serif; }
+    body { background: #05060d; color: #e2e8f0; min-height: 100vh; display: flex; justify-content: center; align-items: center; overflow-x: hidden; padding: 20px; }
+    canvas { position: fixed; top: 0; left: 0; z-index: 1; pointer-events: none; }
+    .container { position: relative; z-index: 10; width: 100%; max-width: 900px; background: rgba(13, 17, 30, 0.92); backdrop-filter: blur(20px); border: 1px solid rgba(56, 189, 248, 0.3); border-radius: 24px; padding: 35px; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), 0 0 35px rgba(56, 189, 248, 0.2); }
+    .header-bar { display: none; justify-content: space-between; align-items: center; border-bottom: 1px solid rgba(255, 255, 255, 0.1); padding-bottom: 15px; margin-bottom: 22px; }
+    .progress-box { font-size: 1.05rem; color: #38bdf8; font-weight: 700; background: rgba(56, 189, 248, 0.1); padding: 8px 16px; border-radius: 20px; border: 1px solid rgba(56, 189, 248, 0.3); }
+    .score-box { font-size: 1.05rem; color: #4ade80; font-weight: 700; }
+    
+    .name-screen { text-align: center; padding: 20px 10px; }
+    .name-screen h2 { font-size: 2rem; color: #38bdf8; margin-bottom: 15px; font-weight: 800; }
+    .name-screen p { font-size: 1.1rem; color: #94a3b8; margin-bottom: 25px; }
+    .input-group { margin-bottom: 25px; }
+    .name-input { width: 100%; max-width: 400px; padding: 16px 20px; border-radius: 14px; border: 1px solid rgba(56, 189, 248, 0.4); background: rgba(255, 255, 255, 0.05); color: #fff; font-size: 1.1rem; text-align: center; outline: none; transition: all 0.3s ease; }
+    .name-input:focus { border-color: #38bdf8; box-shadow: 0 0 15px rgba(56, 189, 248, 0.3); }
+    .start-btn { background: linear-gradient(135deg, #38bdf8, #818cf8); color: white; border: none; padding: 16px 40px; border-radius: 14px; font-size: 1.15rem; font-weight: bold; cursor: pointer; transition: transform 0.2s; }
+    .start-btn:hover { transform: scale(1.03); }
+
+    .loading-screen { display: none; text-align: center; padding: 40px 20px; }
+    .loading-screen h3 { font-size: 1.8rem; color: #38bdf8; margin-bottom: 20px; }
+    .pulse-ring { display: inline-block; width: 80px; height: 80px; border-radius: 50%; border: 4px solid #38bdf8; animation: pulse 1.2s infinite ease-in-out; margin-bottom: 20px; }
+    @keyframes pulse {
+      0% { transform: scale(0.8); opacity: 0.5; box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7); }
+      50% { transform: scale(1.1); opacity: 1; box-shadow: 0 0 25px 10px rgba(56, 189, 248, 0.4); }
+      100% { transform: scale(0.8); opacity: 0.5; box-shadow: 0 0 0 0 rgba(56, 189, 248, 0.7); }
+    }
+
+    #quizBox { display: none; }
+    .question-card { background: rgba(255, 255, 255, 0.03); border-radius: 18px; padding: 25px; border: 1px solid rgba(255, 255, 255, 0.08); margin-bottom: 20px; box-shadow: inset 0 0 15px rgba(0,0,0,0.5); }
+    .topic-tag { display: inline-block; color: #fbbf24; font-size: 0.88rem; font-weight: bold; margin-bottom: 10px; background: rgba(251, 191, 36, 0.1); padding: 4px 12px; border-radius: 12px; border: 1px solid rgba(251, 191, 36, 0.2); }
+    .question-text { font-size: 1.2rem; line-height: 1.9; color: #f1f5f9; font-weight: 600; }
+    .hint-box { display: none; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.4); color: #fca5a5; padding: 14px; border-radius: 12px; margin-bottom: 20px; font-size: 0.98rem; line-height: 1.6; }
+    .options-container { display: flex; flex-direction: column; gap: 12px; }
+    .option-btn { background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255, 255, 255, 0.15); color: #fff; padding: 16px 20px; border-radius: 14px; font-size: 1.05rem; font-weight: 500; cursor: pointer; text-align: right; transition: all 0.3s ease; }
+    .option-btn:hover { background: linear-gradient(135deg, rgba(56, 189, 248, 0.2), rgba(129, 140, 248, 0.2)); border-color: #38bdf8; transform: translateX(-5px); }
+    .option-btn.wrong-first { background: rgba(239, 68, 68, 0.25) !important; border-color: #ef4444 !important; opacity: 0.6; cursor: not-allowed; }
+    .option-btn.correct { background: rgba(34, 197, 94, 0.3) !important; border-color: #22c55e !important; }
+    .next-btn { display: none; width: 100%; margin-top: 20px; background: linear-gradient(135deg, #38bdf8, #818cf8); color: white; border: none; padding: 15px; border-radius: 14px; font-size: 1.1rem; font-weight: bold; cursor: pointer; transition: transform 0.2s; }
+    .next-btn:hover { transform: scale(1.02); }
+    .results-card { text-align: center; padding: 10px; }
+    .results-title { font-size: 2rem; color: #38bdf8; margin-bottom: 10px; font-weight: 800; }
+    .report-table { width: 100%; margin-top: 25px; border-collapse: collapse; text-align: right; max-height: 400px; display: block; overflow-y: auto; border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 12px; }
+    .report-table th, .report-table td { padding: 12px 15px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); font-size: 0.95rem; }
+    .report-table th { background: rgba(56, 189, 248, 0.15); color: #38bdf8; position: sticky; top: 0; }
+    .status-pass { color: #4ade80; font-weight: bold; }
+    .status-fail { color: #f87171; font-weight: bold; }
+  </style>
+</head>
+<body>
+
+  <audio id="sndStart" src="start.mp3" preload="auto"></audio>
+  <audio id="sndCorrect" src="correct.mp3" preload="auto"></audio>
+  <audio id="sndWrong1" src="wrong1.mp3" preload="auto"></audio>
+  <audio id="sndWrong2" src="wrong2.mp3" preload="auto"></audio>
+  <audio id="sndFinal" src="final.mp3" preload="auto"></audio>
+
+  <canvas id="starsCanvas"></canvas>
+
+  <div class="container">
+    <div class="name-screen" id="nameScreen">
+      <h2>⚡ اختبار الفيزياء الفولاذي - الفصل الأول كاملاً</h2>
+      <p>شامل: شدة التيار، توصيل المقاومات، قانون أوم للدوائر المغلقة، وقوانين كيرشوف 🔥</p>
+      <div class="input-group">
+        <input type="text" id="studentName" class="name-input" placeholder="أدخل اسمك الثلاثي..." autocomplete="off">
+      </div>
+      <button class="start-btn" onclick="startQuiz()">بدء الاختبار الصعب 🚀</button>
+    </div>
+
+    <div class="loading-screen" id="loadingScreen">
+      <div class="pulse-ring"></div>
+      <h3>جاري تجهيز بنك الأسئلة والمحاكاة...</h3>
+      <p style="color: #94a3b8;">استعد، الامتحان يبدأ فور انتهاء النغمة 🎵</p>
+    </div>
+
+    <div class="header-bar" id="headerBar">
+      <div class="progress-box">📌 السؤال: <span id="currentQ">1</span> / 100</div>
+      <div class="score-box">🏆 النقاط: <span id="score">0</span></div>
+    </div>
+
+    <div id="quizBox">
+      <div class="question-card">
+        <div class="topic-tag" id="topicTag">الدرس</div>
+        <div class="question-text" id="qText">جاري تحميل السؤال...</div>
+      </div>
+
+      <div class="hint-box" id="hintBox"></div>
+      <div class="options-container" id="optionsContainer"></div>
+      <button class="next-btn" id="nextBtn" onclick="nextQuestion()">السؤال التالي ➔</button>
+    </div>
+  </div>
+
+  <script>
+    const FORMSPREE_ENDPOINT = "https://formspree.io/f/mvkganog";
+    let studentName = "";
+
+    function playAudio(audioId) {
+      const audio = document.getElementById(audioId);
+      if (audio) {
+        audio.currentTime = 0;
+        audio.play().catch(e => console.log("Audio play error:", e));
+      }
+    }
+
+    // بنك 100 سؤال متكامل وشديد الصعوبة على الفصل الأول (شامل قوانين كيرشوف)
+    const rawQuestions = [
+      // --- الدرس الأول: شدة التيار، الجهد، المقاومة والمقاومة النوعية (1 - 25) ---
+      { topic: "شدة التيار والمقاومة", q: "1. إذا زاد طول موصل بمقدار 200% نتيجة السحب المنتظم، فإن مقاومته الكهربية تزداد بمقدار:", options: ["300%", "400%", "800%", "900%"], ans: 2, hint: "💡 L2 = 3L1. في السحب R ∝ L² فتصبح 9 أضعاف، والزيادة بمقدار 800%." },
+      { topic: "شدة التيار والمقاومة", q: "2. سلكان من نفس المادة، طول الأول ضعف طول الثاني وكتلة الثاني ضعف كتلة الأول. تكون النسبة بين مقاومتيهما R1/R2 هي:", options: ["8 : 1", "1 : 8", "4 : 1", "1 : 4"], ans: 0, hint: "💡 R = ρ·d·L²/m. بالتالي (L1/L2)² × (m2/m1) = (2)² × (2) = 8." },
+      { topic: "شدة التيار والمقاومة", q: "3. يدور إلكترون بسرعة v في مسار دائري نصف قطره r. شدة التيار المكافئة لحركة الإلكترون تساوي:", options: ["e·v / (2πr)", "2πr / (e·v)", "e·v·r / 2π", "e·v / (πr²)"], ans: 0, hint: "💡 I = q/T، والزمن T = 2πr/v ⟹ I = e·v/(2πr)." },
+      { topic: "شدة التيار والمقاومة", q: "4. موصل مخروطي متدرج المقطع من r إلى 2r يمر به تيار ثابت I. النسبة بين كثافة التيار J1/J2 هي:", options: ["1 : 2", "4 : 1", "1 : 4", "2 : 1"], ans: 1, hint: "💡 J = I/A. وبما أن I ثابت، فإن J تتناسب عكسياً مع المساحة r²." },
+      { topic: "شدة التيار والمقاومة", q: "5. مكعب مصمت أُعيد تشكيله ليصبح متوازي مستطيلات أبعاده (L/2, L, 2L). أكبر مقاومة تظهر عند دخول التيار من الوجه أبعاده:", options: ["L/2 × L", "L/2 × 2L", "L × 2L", "متساوية في كل الأوجه"], ans: 0, hint: "💡 R تكون أكبر ما يمكن عند اختيار أصغر مساحة وأطول مسار." },
+      { topic: "شدة التيار والمقاومة", q: "6. دالة الشحنة بالنسبة للزمن q(t) = 3t² + 2t + 5. شدة التيار اللحظية عند t = 3 ثوانٍ تساوي:", options: ["20 A", "11 A", "33 A", "18 A"], ans: 0, hint: "💡 I = dq/dt = 6t + 2. عند t = 3 ⟹ I = 20 A." },
+      { topic: "شدة التيار والمقاومة", q: "7. مصباح مدون عليه (100W, 220V). إذا وصل بمصدر 110V، فإن القدرة المستهلكة فيه تصبح:", options: ["25 W", "50 W", "100 W", "200 W"], ans: 0, hint: "💡 P = V²/R. هبوط الجهد للنصف يقلل القدرة للربع عند ثبوت R." },
+      { topic: "شدة التيار والمقاومة", q: "8. إذا زاد نصف قطر سلك إلى الضعف وقل طوله للنصف، فإن التوصيلية الكهربية لمادته:", options: ["لا تتغير", "تزداد للضعف", "تقل للنصف", "تزداد لأربعة أمثال"], ans: 0, hint: "💡 التوصيلية صفة مميزة للمادة تعتمد فقط على نوع المادة ودرجة الحرارة." },
+      { topic: "شدة التيار والمقاومة", q: "9. سلك مقاومته R، تم ثنيه من منتصفه ليتضاعف سمكه، فتكون المقاومة الجديدة:", options: ["R / 4", "R / 2", "2 R", "4 R"], ans: 0, hint: "💡 الطول يقل للنصف والمساحة تتضاعف فتصبح R/4." },
+      { topic: "شدة التيار والمقاومة", q: "10. موصل أسطواني مجوف طوله L ونصف قطريه الداخلي r1 والخارجي r2. مقاومته عند مرور التيار موازياً للمحور هي:", options: ["ρ·L / [π(r2² - r1²)]", "ρ·L / [π(r2 + r1)²]", "ρ·(r2 - r1) / (πL²)", "ρ·L / (2πr1r2)"], ans: 0, hint: "💡 مساحة مقطع المادة الموصلة هي A = π(r2² - r1²)." },
+      { topic: "شدة التيار والمقاومة", q: "11. الشغل المبذول لنقل 4 C بين نقطتين فرق الجهد بينهما 12 V يساوي:", options: ["48 J", "3 J", "0.33 J", "16 J"], ans: 0, hint: "💡 W = V × q = 12 × 4 = 48 Joule." },
+      { topic: "شدة التيار والمقاومة", q: "12. الشحنة الكهربية التي تعبر مقطع موصل يمر به تيار 5 A في زمن قدره دقيقة واحدة هي:", options: ["300 C", "5 C", "12 C", "60 C"], ans: 0, hint: "💡 q = I × t = 5 × 60 = 300 C." },
+      { topic: "شدة التيار والمقاومة", q: "13. عند رفع حرارة الموصلات الفلزية، تزداد مقاومتها بسبب:", options: ["زيادة سعة وسرعة اهتزاز الجزيئات", "زيادة عدد الإلكترونات الحرة", "نقص سرعة الإلكترونات", "نقص التردد الاهتزازي"], ans: 0, hint: "💡 زيادة طاقة اهتزاز الذرات تزيد معدل التصادم بالإلكترونات." },
+      { topic: "شدة التيار والمقاومة", q: "14. سلكان A و B من نفس المادة، طول A ضعف B وقطر A نصف B. النسبة R_A / R_B هي:", options: ["8 : 1", "4 : 1", "2 : 1", "1 : 2"], ans: 0, hint: "💡 R ∝ L/r² ⟹ (L_A/L_B) × (r_B/r_A)² = 2 × 4 = 8." },
+      { topic: "شدة التيار والمقاومة", q: "15. ميل الرسم البياني بين V على الراسي و I على الأفقي يمثل:", options: ["المقاومة الكهربية R", "المقاومة النوعية", "التوصيلية الكهربية", "الشغل الكهربي"], ans: 0, hint: "💡 V/I = R." },
+      { topic: "شدة التيار والمقاومة", q: "16. إذا مر 10¹⁹ إلكترون خلال ثانية واحدة، تكون شدة التيار (علماً بأن e = 1.6×10⁻¹⁹ C):", options: ["1.6 A", "16 A", "0.16 A", "160 A"], ans: 0, hint: "💡 I = N·e / t = 1.6 A." },
+      { topic: "شدة التيار والمقاومة", q: "17. أي من الوحدات التالية لا تكافئ القاط (Watt):", options: ["J·s", "J/s", "A·V", "A²·Ω"], ans: 0, hint: "💡 القدرة تساوي J/s وليست J·s." },
+      { topic: "شدة التيار والمقاومة", q: "18. سلك ألومنيوم ونحاس لهما نفس L و R، تكون نسبة r_Al / r_Cu متناسبة مع:", options: ["√(ρ_Al / ρ_Cu)", "ρ_Al / ρ_Cu", "ρ_Cu / ρ_Al", "√(ρ_Cu / ρ_Al)"], ans: 0, hint: "💡 بما أن R و L متساويان: r ∝ √ρ." },
+      { topic: "شدة التيار والمقاومة", q: "19. عند زيادة شدة التيار المار في موصل للضعف، فإن مقاومته عند ثبوت الحرارة:", options: ["تظل ثابته", "تزداد للضعف", "تقل للنصف", "تزداد للأربعة أمثال"], ans: 0, hint: "💡 المقاومة تؤثر في التيار وليس العكس." },
+      { topic: "شدة التيار والمقاومة", q: "20. حاصل ضرب المقاومة النوعية لمادة في توصيليتها الكهربية يساوي:", options: ["1", "صفر", "تتوقف على الحرارة", "تتوقف على الطول"], ans: 0, hint: "💡 ρ_e × σ = 1 دائماً." },
+      { topic: "شدة التيار والمقاومة", q: "21. سلك مقاومته 10Ω سحب فزاد طوله بمقدار 10%، تكون مقاومته الجديدة تقريباً:", options: ["12.1 Ω", "11 Ω", "12 Ω", "10.1 Ω"], ans: 0, hint: "💡 L2 = 1.1 L1 ⟹ R2 = (1.1)² × 10 = 12.1 Ω." },
+      { topic: "شدة التيار والمقاومة", q: "22. الطاقة المستهلكة في موصل مقاومته R يمر به تيار I خلال زمن t هي:", options: ["I²·R·t", "I·R·t", "I·R²·t", "V·I²/t"], ans: 0, hint: "💡 Power × t = I²·R·t." },
+      { topic: "شدة التيار والمقاومة", q: "23. يلزم بذل شغل 100 J لنقل 20 C خلال 2s. تكون القدرة المستهلكة:", options: ["50 W", "100 W", "10 W", "200 W"], ans: 0, hint: "💡 Power = W / t = 100 / 2 = 50 W." },
+      { topic: "شدة التيار والمقاومة", q: "24. سلكان A و B من نفس المادة، كتلة A نصف B وطول A ضعف B. النسبة R_A / R_B هي:", options: ["8 : 1", "4 : 1", "2 : 1", "1 : 8"], ans: 0, hint: "💡 R ∝ L²/m ⟹ (2)² / (0.5) = 8." },
+      { topic: "شدة التيار والمقاومة", q: "25. زيارة طول السلك للضعف ونقص مساحته للنصف تؤدي لزيادة المقاومة بمقدار:", options: ["3 أضعاف قيمتها الأصلية", "4 أضعاف", "ضعفين", "8 أضعاف"], ans: 0, hint: "💡 تصبح 4R، فمقدار الزيادة هو 3R (3 أضعاف)." },
+
+      // --- الدرس الثاني: توصيل المقاومات (26 - 50) ---
+      { topic: "توصيل المقاومات", q: "26. مجموعة مقاومات متساوية R، توالي تكافئ X وتوازي تكافئ Y. قيمة R تساوي:", options: ["√(X·Y)", "X / Y", "X·Y", "√(X / Y)"], ans: 0, hint: "💡 X = nR و Y = R/n ⟹ X·Y = R² ⟹ R = √(X·Y)." },
+      { topic: "توصيل المقاومات", q: "27. حلقة فلزية مقاوتها 48Ω أُوصلت بطارية بين طرفي قطر فيها. المقاومة المكافئة:", options: ["12 Ω", "24 Ω", "48 Ω", "6 Ω"], ans: 0, hint: "💡 القطر يقسمها لفرعين (24 Ω // 24 Ω) = 12 Ω." },
+      { topic: "توصيل المقاومات", q: "28. 3 مقاومات (R, 2R, 3R) توازي. إذا كان تيار R هو I، فإن التيار الكلي يساوي:", options: ["1.83 I", "2.5 I", "6 I", "1.16 I"], ans: 0, hint: "💡 I + 0.5I + 0.33I = 1.83 I." },
+      { topic: "توصيل المقاومات", q: "29. عند فتح مفتاح فرع متصل توازي في دائرة، فإن المقاومة الكلية للدائرة:", options: ["تزداد", "تقل", "تظل ثابتة", "تنعدم"], ans: 0, hint: "💡 إلغاء مسار توازي يرفع المقاومة المكافئة الكلية." },
+      { topic: "توصيل المقاومات", q: "30. 5 مقاومات متماثلة R، أربع شكلت مربعاً والخامسة على القطر. المكافئة بين القطر:", options: ["R / 2", "R", "2 R", "R / 4"], ans: 0, hint: "💡 (2R // 2R // R) = R/2." },
+      { topic: "توصيل المقاومات", q: "31. مقاومتان R1 و R2 عند التوالي 25Ω وعند التوازي 4Ω. قيمتا المقاومتين:", options: ["20Ω و 5Ω", "15Ω و 10Ω", "18Ω و 7Ω", "12Ω و 13Ω"], ans: 0, hint: "💡 R1 + R2 = 25 و R1·R2 = 100. هما 20 و 5." },
+      { topic: "توصيل المقاومات", q: "32. ثلاث مقاومات 6Ω للحصول على مكافئة 9Ω يتم توصيلها بـ:", options: ["مقاومتين توازي معهما الثالثة توالي", "مقاومتين توالي معهما الثالثة توازي", "الثلاثة توالي", "الثلاثة توازي"], ans: 0, hint: "💡 (6 // 6) + 6 = 3 + 6 = 9 Ω." },
+      { topic: "توصيل المقاومات", q: "33. سلك 12Ω قُسّم لـ 3 قطع متساوية ووصلت توازي. المقاومة المكافئة:", options: ["1.33 Ω", "4 Ω", "0.75 Ω", "36 Ω"], ans: 0, hint: "💡 كل قطعة 4 Ω. توازي 3 قطع = 4/3 = 1.33 Ω." },
+      { topic: "توصيل المقاومات", q: "34. قنطرة وهيتستون تكون متزنة عندما تتطابق النسبة:", options: ["R1 / R2 = R3 / R4", "R1 · R2 = R3 · R4", "R1 + R2 = R3 + R4", "R1 - R2 = R3 - R4"], ans: 0, hint: "💡 اتزان القنطرة يعني عدم مرور تيار بالجلفانومتر." },
+      { topic: "توصيل المقاومات", q: "35. سلكان متماثلان بالقدرة P. إذا وصلا توالي مع نفس المصدر فالقدرة الكلية تصبح:", options: ["P / 2", "2 P", "P / 4", "4 P"], ans: 0, hint: "💡 المقاومة تضاعفت ⟹ القدرة تقل للنصف." },
+      { topic: "توصيل المقاومات", q: "36. وفي السؤال السابق، إذا وصلا توازي مع نفس المصدر فالقدرة الكلية تصبح:", options: ["2 P", "P / 2", "4 P", "P / 4"], ans: 0, hint: "💡 المقاومة قلت للنصف ⟹ القدرة تتضاعف لتصبح 2P." },
+      { topic: "توصيل المقاومات", q: "37. النسبة بين المقاومة المكافئة لـ n مقاومات متماثلة R توالي إلى توازي هي:", options: ["n²", "1 / n²", "n", "1 / n"], ans: 0, hint: "💡 nR / (R/n) = n²." },
+      { topic: "توصيل المقاومات", q: "38. أربع مقاومات 10Ω شكلت مربعاً ABCD. المقاومة المكافئة بين A و C (قطرياً):", options: ["10 Ω", "20 Ω", "5 Ω", "40 Ω"], ans: 0, hint: "💡 (20 // 20) = 10 Ω." },
+      { topic: "توصيل المقاومات", q: "39. وفي المربع السابق، المقاومة المكافئة بين A و B (ضلع متجاور):", options: ["7.5 Ω", "10 Ω", "2.5 Ω", "15 Ω"], ans: 0, hint: "💡 (10 // 30) = (10×30)/40 = 7.5 Ω." },
+      { topic: "توصيل المقاومات", q: "40. في دائرة تحتوي R و 2R توازي. نسبة القدرة المستهلكة P1 / P2 فيهما:", options: ["2 : 1", "1 : 2", "4 : 1", "1 : 4"], ans: 0, hint: "💡 P = V²/R. الجهد ثابت فتكون النسب عكسية مع R." },
+      { topic: "توصيل المقاومات", q: "41. وفي حالة R و 2R توالي، تكون نسبة القدرة P1 / P2 فيهما:", options: ["1 : 2", "2 : 1", "1 : 4", "4 : 1"], ans: 0, hint: "💡 P = I²·R. التيار ثابت فتكون النسب طردية مع R." },
+      { topic: "توصيل المقاومات", q: "42. المكافئة لـ 3 مقاومات متساوية توازي هي 2Ω. المكافئة لها توالي تكون:", options: ["18 Ω", "6 Ω", "9 Ω", "36 Ω"], ans: 0, hint: "💡 R = 6 Ω. بالتوالي = 3 × 6 = 18 Ω." },
+      { topic: "توصيل المقاومات", q: "43. عدد المقاومات (40Ω) الموصلة توازي ليمر تيار 15A تحت 120V هو:", options: ["5 مقاومات", "4 مقاومات", "6 مقاومات", "8 مقاومات"], ans: 0, hint: "💡 R_eq = 120/15 = 8 Ω. n = 40/8 = 5." },
+      { topic: "توصيل المقاومات", q: "44. قص سلك R للنصف ووصل نصفه بنفس البطارية. نسبة القدرة الجديدة للأولى:", options: ["2 : 1", "1 : 2", "4 : 1", "1 : 1"], ans: 0, hint: "💡 المقاومة أصبحت R/2 ⟹ القدرة أصبحت ضعفين." },
+      { topic: "توصيل المقاومات", q: "45. دائرة بها (6Ω // 12Ω) توالي مع 4Ω. المقاومة الكلية تكون:", options: ["8 Ω", "22 Ω", "10 Ω", "6 Ω"], ans: 0, hint: "💡 4 + 4 = 8 Ω." },
+      { topic: "توصيل المقاومات", q: "46. في الدائرة السابقة إذا كان التيار الكلي 3A، تيار المقاومة 6Ω يساوي:", options: ["2 A", "1 A", "1.5 A", "3 A"], ans: 0, hint: "💡 يتجزأ بنسبة عكسية للمقاومات: الـ 6Ω تأخذ 2 A." },
+      { topic: "توصيل المقاومات", q: "47. انعدام فرق الجهد بين طرفي مقاومة في دائرة يعني أنها:", options: ["ملغاة بسلك توازي", "تمر بها أقصى شدة تيار", "متصلة توالي مع المصدر", "قيمتها لا نهائية"], ans: 0, hint: "💡 سلك عديم المقاومة على التوازي يلغي المقاومة." },
+      { topic: "توصيل المقاومات", q: "48. ثلاث مقاومات 10Ω, 20Ω, 30Ω توازي. المقاومة الكلية قطعاً أقل من:", options: ["10 Ω", "20 Ω", "30 Ω", "60 Ω"], ans: 0, hint: "💡 أصل المقاومة المكافئة توازي أنها أصغر من أصغر مقاومة." },
+      { topic: "توصيل المقاومات", q: "49. سلك مقطعه متغير. التيار المار بالمقطع الضيق مقارنة بالواسع يكون:", options: ["متساويًا", "أكبر في الضيق", "أكبر في الواسع", "يعتمد على المادة"], ans: 0, hint: "💡 الشحنات لا تتراكم، والمسار متسلسل تتابعياً." },
+      { topic: "توصيل المقاومات", q: "50. أربعة مقاومات موصلة توازي لقراءات أجهزة متساوية، تكون المقاومات:", options: ["متساوية", "مختلفة", "تنازلية", "تصاعدية"], ans: 0, hint: "💡 V و I متساويان ⟹ R متساوية." },
+
+      // --- الدرس الثالث: قانون أوم للدوائر المغلقة (51 - 75) ---
+      { topic: "قانون أوم للدوائر المغلقة", q: "51. بطارية VB ومقاومتها الداخلية r = R أُوصلت بمقاومة خارجية R. كفاءتها تساوي:", options: ["50%", "100%", "25%", "75%"], ans: 0, hint: "💡 R / (R + R) × 100% = 50%." },
+      { topic: "قانون أوم للدوائر المغلقة", q: "52. بطارية VB ومقاومتها r أُوصلت بمقاومة خارجية R = 3r. كفاءتها تساوي:", options: ["75%", "25%", "50%", "80%"], ans: 0, hint: "💡 3r / (3r + r) × 100% = 75%." },
+      { topic: "قانون أوم للدوائر المغلقة", q: "53. عند زيادة الريوستات في دائرة مغلقة، فإن قراءة فولتميتر القطبين (بها r):", options: ["تزداد وتقترب من VB", "تقل وتصل للصفر", "تنعدم", "لا تتغير"], ans: 0, hint: "💡 V = VB - I·r. تقليل I يقلل I·r المخصوم فتزداد V." },
+      { topic: "قانون أوم للدوائر المغلقة", q: "54. عند توصيل بطارية بـ R1 مر I1، وبارتباطها بـ R2 مر I2. القوة الدافعة VB هي:", options: ["I1·I2·(R1 - R2) / (I2 - I1)", "I1·I2·(R2 - R1) / (I1 - I2)", "(I1·R1 - I2·R2)", "(I1·R2 - I2·R1)"], ans: 0, hint: "💡 بمساواة المعادلتين VB = I1(R1+r) = I2(R2+r)." },
+      { topic: "قانون أوم للدوائر المغلقة", q: "55. بطارية r = 0. فرق الجهد بين قطبيها ينخفض عن VB بمقدار:", options: ["صفر", "I·r", "VB / 2", "I·R"], ans: 0, hint: "💡 عندما r = 0 يكون V = VB دائماً." },
+      { topic: "قانون أوم للدوائر المغلقة", q: "56. بطاريتان متماثلتان (VB, r) متصلتان توازي. المكافئ لهما هو:", options: ["VB و r/2", "2VB و 2r", "VB و r", "2VB و r/2"], ans: 0, hint: "💡 التوازي يثبت VB وتقسم r للنصف (r/2)." },
+      { topic: "قانون أوم للدوائر المغلقة", q: "57. نسبة القوة الدافعة VB إلى فرق جهد القطبين V في حالة التفريغ تكون:", options: ["أكبر من 1", "أقل من 1", "تساوي 1", "تساوي صفر"], ans: 0, hint: "💡 VB = V + I·r ⟹ VB > V." },
+      { topic: "قانون أوم للدوائر المغلقة", q: "58. عند فتح الدائرة الخارجية لبطارية، يصبح فرق جهد القطبين:", options: ["مساوياً لـ VB", "صفراً", "أكبر من VB", "نصف VB"], ans: 0, hint: "💡 I = 0 ⟹ V = VB." },
+      { topic: "قانون أوم للدوائر المغلقة", q: "59. في حالة شحن بطارية (يدخل التيار لقطبها الموجب)، يكون جهد القطبين V بالنسبة لـ VB:", options: ["أكبر من VB", "أقل من VB", "مساوياً لـ VB", "منعدماً"], ans: 0, hint: "💡 في الشحن V = VB + I·r ⟹ V أكبر من VB." },
+      { topic: "قانون أوم للدوائر المغلقة", q: "60. بطارية VB = 12V و r = 1Ω ووصلت بـ 5Ω. التيار المار بالدائرة يساوي:", options: ["2 A", "2.4 A", "12 A", "1 A"], ans: 0, hint: "💡 I = 12 / (5 + 1) = 2 A." },
+      { topic: "قانون أوم للدوائر المغلقة", q: "61. وفي السؤال السابق، فرق الجهد بين قطبي البطارية يساوي:", options: ["10 V", "12 V", "2 V", "5 V"], ans: 0, hint: "💡 V = 12 - (2×1) = 10 V." },
+      { topic: "قانون أوم للدوائر المغلقة", q: "62. بطاريتان توالي متدافعان VB1 و VB2. القوة الدافعة الكلية للمجموعة:", options: ["VB1 + VB2", "VB1 - VB2", "VB1 × VB2", "صفر"], ans: 0, hint: "💡 التوصيل التدافعي يجمع القوى الدافعة." },
+      { topic: "قانون أوم للدوائر المغلقة", q: "63. بطاريتان توالي متضادتان (VB1 > VB2). القوة الدافعة الكلية للمجموعة:", options: ["VB1 - VB2", "VB1 + VB2", "VB1 / VB2", "صفر"], ans: 0, hint: "💡 التوصيل التضادي يطرح القوى الدافعة." },
+      { topic: "قانون أوم للدوائر المغلقة", q: "64. البطارية ذات القوة الدافعة الأكبر في التوصيل التضادي تكون في حالة:", options: ["تفريغ", "شحن", "اتزان", "تلف"], ans: 0, hint: "💡 الأقوى تفرض التيار فتفرغ." },
+      { topic: "قانون أوم للدوائر المغلقة", q: "65. والبطارية ذات القوة الدافعة الأصغر في التوصيل التضادي تكون في حالة:", options: ["شحن", "تفريغ", "توليد", "قصر دائرى"], ans: 0, hint: "💡 الأضعف يُفرض عليها التيار فتُشحن." },
+      { topic: "قانون أوم للدوائر المغلقة", q: "66. الهبوط في الجهد داخل المصدر يحدد بالعلاقة:", options: ["I · r", "I · R", "VB / r", "I² · r"], ans: 0, hint: "💡 V_internal = I × r." },
+      { topic: "قانون أوم للدوائر المغلقة", q: "67. تقليل الريوستات S في دائرة مغلقة يجعل التيار I وفقد الجهد الداخلي I·r:", options: ["يزداد التيار ويزداد فقد الجهد الداخلي", "يقل التيار ويقل الفقد", "يزداد التيار ويقل الفقد", "يقل التيار ويزداد الفقد"], ans: 0, hint: "💡 تقليل S يرفع I فيزداد المخصوم الداخلي I·r." },
+      { topic: "قانون أوم للدوائر المغلقة", q: "68. ثلاث بطاريات (2V, 0.5Ω) توالي. تيار القصر عند ربط طرفيها بسلك مهمل R هو:", options: ["4 A", "12 A", "2 A", "6 A"], ans: 0, hint: "💡 I = 6 / 1.5 = 4 A." },
+      { topic: "قانون أوم للدوائر المغلقة", q: "69. زيادة المقاومة الخارجية للدائرة إلى المالانهاية تجعل كفاءة البطارية تقترب من:", options: ["100%", "50%", "صفر%", "25%"], ans: 0, hint: "💡 R / (R + r) تصبح 1 أي 100%." },
+      { topic: "قانون أوم للدوائر المغلقة", q: "70. عمود VB = 6V و r = 1Ω وصل بمصباح 11Ω. الشغل الكلي لنقل 1 C بالدائرة هو:", options: ["6 J", "5.5 J", "0.5 J", "12 J"], ans: 0, hint: "💡 W_total = q × VB = 1 × 6 = 6 J." },
+      { topic: "قانون أوم للدوائر المغلقة", q: "71. وفي السؤال السابق، الشغل المبذول لنقل الشحنة داخل العمود فقط يساوي:", options: ["0.5 J", "5.5 J", "6 J", "1 J"], ans: 0, hint: "💡 I = 0.5 A ⟹ V_in = 0.5V ⟹ W_in = 0.5 J." },
+      { topic: "قانون أوم للدوائر المغلقة", q: "72. بطارية 10V و r = 1Ω. أقصى شدة تيار يمكن سحبها منها هي:", options: ["10 A", "5 A", "1 A", "لا نهائية"], ans: 0, hint: "💡 يحدث عند R = 0 ⟹ I = 10/1 = 10 A." },
+      { topic: "قانون أوم للدوائر المغلقة", q: "73. لتصل شدة تيار بطارية لنصف قيمتها العظمى القصوى، يجب أن تكون المقاومة R مساوية لـ:", options: ["r", "2 r", "r / 2", "4 r"], ans: 0, hint: "💡 I = 0.5 (VB/r) ⟹ R + r = 2r ⟹ R = r." },
+      { topic: "قانون أوم للدوائر المغلقة", q: "74. أقصى قدرة خارجية مستمدة من بطارية تكون عندما تتساوى المقاومة الخارجية R مع:", options: ["المقاومة الداخلية r", "صفر", "ضعف r", "نصف r"], ans: 0, hint: "💡 نظرية أقصى نقل قدرة (Maximum Power Transfer) R = r." },
+      { topic: "قانون أوم للدوائر المغلقة", q: "75. مصدر يعطي 18V من أصل 20V للقوة الدافعة الكلية، تكون كفاءته:", options: ["90%", "10%", "80%", "95%"], ans: 0, hint: "💡 (18 / 20) × 100% = 90%." },
+
+      // --- الدرس الرابع: قوانين كيرشوف - المستويات العليا (76 - 100) ---
+      { topic: "قوانين كيرشوف", q: "76. قانون كيرشوف الأول (قانون النقطة) يستند في أساسه العلمي الفيزيائي على مبدأ حفظ:", options: ["الشحنة الكهربية", "الطاقة الكهربية", "الكمية التحرك", "الكتلة"], ans: 0, hint: "💡 مجموع الشحنات الداخلة للنقطة = الشحنات الخارجة منها (حفظ الشحنة)." },
+      { topic: "قوانين كيرشوف", q: "77. قانون كيرشوف الثاني (قانون المسار المغلق) يستند أساساً على مبدأ حفظ:", options: ["الطاقة", "الشحنة", "الكمية", "المادة"], ans: 0, hint: "💡 ΣVB = Σ(I·R) يعبر عن بقاء الطاقة في المسار المغلق." },
+      { topic: "قوانين كيرشوف", q: "78. عند نقطة تفرع، يدخل التيار I1 و I2 وتخرج التيارات I3 و I4 و I5. المجموع الجبري للتيارات عند النقطة يساوي:", options: ["صفر", "I1 + I2", "I3 + I4 + I5", "2 (I1 + I2)"], ans: 0, hint: "💡 الصيغة العامة لقانون كيرشوف الأول هي ΣI = 0." },
+      { topic: "قوانين كيرشوف", q: "79. في مسار مغلق يحتوي بطاريتين متضادتين VB1 = 12V و VB2 = 4V ومقاومة 4Ω. شدة التيار المار بالمسار تساوي:", options: ["2 A", "4 A", "1.6 A", "3 A"], ans: 0, hint: "💡 ΣVB = 12 - 4 = 8V. I = 8 / 4 = 2 A." },
+      { topic: "قوانين كيرشوف", q: "80. نقطة تفرع يدخلها تيار 5A وتيار 3A وتيار I، ويخرج منها تيار 12A. قيمة التيار I واتجاهه هما:", options: ["4A يدخل للنقطة", "4A يخرج من النقطة", "20A يدخل للنقطة", "20A يخرج من النقطة"], ans: 0, hint: "💡 الداخل = 5 + 3 + I = 8 + I. الخارج = 12. إذن I = 4A يدخل." },
+      { topic: "قوانين كيرشوف", q: "81. في مسار مغلق، إذا قمنا بتطبيق قانون كيرشوف الثاني في عكس اتجاه التيار المار بمقاومة R، فإن الجهد I·R يؤخذ بإشارة:", options: ["موجبة (+) عند السير عكس التيار", "سالبة (-)", "صفر", "تعتمد على القوة الدافعة"], ans: 0, hint: "💡 السير عكس اتجاه التيار في المقاومة يعتبر ارتفاعاً في الجهد (+I·R)." },
+      { topic: "قوانين كيرشوف", q: "82. عند عبور بطارية من القطب الموجب إلى القطب السالب أثناء العبور بمسار كيرشوف، فإن جهد البطارية VB يوضع بإشارة:", options: ["سالبة (-VB)", "موجبة (+VB)", "صفر", "I·r"], ans: 0, hint: "💡 الانتقال من الموجب للسالب هو هبوط في الجهد فيوضع سالب (-VB)." },
+      { topic: "قوانين كيرشوف", q: "83. دائرة تحتوي على 3 أفرع مستقلة متلاقية في نقطتين. عدد معادلات كيرشوف الملازمة للتيارات المتطلبة للحل هو:", options: ["3 معادلات (واحدة كيرشوف 1 واثنتان كيرشوف 2)", "معادلتان", "4 معادلات", "معادلة واحدة"], ans: 0, hint: "💡 لدينا 3 مجاهيل للتيار، نحتاج 3 معادلات مستقلة." },
+      { topic: "قوانين كيرشوف", q: "84. جهد النقطة المتصلة بالأرض (Ground) في أي دائرة كهربائية يساوي دائماً:", options: ["صفر فولت", "100 فولت", "مساوياً لـ VB", "يعتمد على شدة التيار"], ans: 0, hint: "💡 نقطة التأريض تُتخذ كمرجع جهدي قيمته صفر." },
+      { topic: "قوانين كيرشوف", q: "85. إذا كان جهد النقطة A هو 15V وجهد النقطة B هو 5V، فإن فرق الجهد V_AB والجهد المطلوب لنقل 2C من A إلى B هو:", options: ["10V وشغل 20J", "20V وشغل 10J", "10V وشغل 5J", "5V وشغل 10J"], ans: 0, hint: "💡 V_AB = 15 - 5 = 10V. W = q × V = 2 × 10 = 20 J." },
+      { topic: "قوانين كيرشوف", q: "86. شبكة تفرع بها أربعة أفرع: I1 = 2A يدخل، I2 = 3A يدخل، I3 = 4A يخرج. التيار I4 المتبقي يكون:", options: ["1A يخرج", "1A يدخل", "9A يخرج", "5A يدخل"], ans: 0, hint: "💡 2 + 3 = 4 + I4 ⟹ 5 = 4 + I4 ⟹ I4 = 1A يخرج." },
+      { topic: "قوانين كيرشوف", q: "87. فرع به بطارية 10V ومقاومة 2Ω يمر بها تيار 3A من A إلى B. فرق الجهد V_A - V_B بفرض مسار الشحن للبطارية هو:", options: ["16 V", "4 V", "10 V", "6 V"], ans: 0, hint: "💡 V_A - 3(2) - 10 = V_B ⟹ V_A - V_B = 16 V." },
+      { topic: "قوانين كيرشوف", q: "88. في قانون كيرشوف الأول، إذا كانت الشحنات تدخل وتخرج بحالة استقرار، فإن معدل تغير الشحنة dq/dt داخل عقدة التفرع يساوي:", options: ["صفر", "شدة التيار الكلي", "القوة الدافعة", "المقاومة المكافئة"], ans: 0, hint: "💡 عدم تراكم الشحنات يعني dq/dt = 0 في العقدة." },
+      { topic: "قوانين كيرشوف", q: "89. سلك به مقاومة R ومر به تيار I. إذا كان جهد بدايته 20V وجهد نهايته 8V، فإن هبوط الجهد I·R يساوي:", options: ["12 V", "28 V", "1.6 V", "20 V"], ans: 0, hint: "💡 الهبوط في الجهد = V_start - V_end = 20 - 8 = 12 V." },
+      { topic: "قوانين كيرشوف", q: "90. عند تطبيق قانون كيرشوف الثاني على مسار مغلق لا يحتوي على أي مصادر للجهد (بطاريات)، فإن Σ(I·R) يساوي:", options: ["صفر", "أكبر من صفر", "أقل من صفر", "I الكلي"], ans: 0, hint: "💡 ΣVB = 0 ⟹ Σ(I·R) = 0." },
+      { topic: "قوانين كيرشوف", q: "91. في جزء من دائرة، مر تيار 2A في مقاومة 4Ω، وتيار 3A في مقاومة 2Ω متصلة معها على التوالي في نفس الاتجاه. فرق الجهد الكلي بين الطرفين هو:", options: ["لا يمكن؛ لأن توصيل التوالي يفرض ثبات شدة التيار", "14 V", "10 V", "20 V"], ans: 0, hint: "💡 يستحيل اختلاف التيار في فرع توالي واحد بدون عقدة تفرع." },
+      { topic: "قوانين كيرشوف", q: "92. حلقة دائرية مغلقة بها بطارية VB ومقاومة R. المجموع الجبري لتغيرات الجهد الكهربي عبر دورة كاملة بالحلقة يساوي:", options: ["صفر", "VB", "I·R", "2 VB"], ans: 0, hint: "💡 التغير الكلي للجهد في أي دورة مغلقة مقفلة يساوي صفر (قانون كيرشوف 2)." },
+      { topic: "قوانين كيرشوف", q: "93. ثلاث مقاومات متصلة على شكل مثلث ABC. إذا أدخل التيار من A وخرج من B، فإن الضلع AC والضلع CB بالنسبة للضلع AB يكونان في حالة:", options: ["توالي مع بعضهما، والمجموعة توازي مع AB", "توازي مع بعضهما", "توالي جميعاً", "قنطرة ملغاة"], ans: 0, hint: "💡 المسار AC-CB متسلسل (توالي)، والمجموع توازي مع الفرع المباشر AB." },
+      { topic: "قوانين كيرشوف", q: "94. في الشبكات المعقدة، يُفضل استخدام قوانين كيرشوف بدلاً من قانون أوم البسيط عندما تكون الدائرة تحتوي على:", options: ["عدة مسارات مغلقة وأكثر من مصدر في أفرع مختلفة", "مقاومة واحدة فقط", "بطارية واحدة ومقاومات توازي بسيطة", "مكثفات فقط"], ans: 0, hint: "💡 كيرشوف يُحل الدوائر التي لا يمكن تبسيطها لتوالي وتوازي صريح." },
+      { topic: "قوانين كيرشوف", q: "95. إذا كانت القدرة المستهلكة في الفرع الأول لشبكة كيرشوف هي 10W وفي الفرع الثاني 15W، فإن القدرة المستهلكة الكلية من البطاريات المفرغة هي:", options: ["25 W", "5 W", "150 W", "10 W"], ans: 0, hint: "💡 القدرة المستمدة الكلية = مجموع القدرات المستهلكة بالأفرع = 10 + 15 = 25 W." },
+      { topic: "قوانين كيرشوف", q: "96. بطارية 12V تُشحن بتيار 2A ومقاومتها الداخلية 1Ω. القدرة المستهلكة داخل هذه البطارية أثناء الشحن تشمل:", options: ["قدرة كيميائية مختزنة (VB·I) وقدرة حرارية (I²·r)", "قدرة حرارية فقط", "قدرة كيميائية فقط", "صفر"], ans: 0, hint: "💡 الشحن يستهلك طاقة لتخزينها كيميائياً (12×2 = 24W) وطاقة حرارية في r (4×1 = 4W)." },
+      { topic: "قوانين كيرشوف", q: "97. في مسار مغلق لكيرشوف، إذا كان اتجاه العبور المختار نفس اتجاه التيار في جميع المقاومات، ونفس اتجاه الخروج من موجب البطاريات، فإن المعادلة تكون:", options: ["ΣVB = Σ(I·R) بجميع الأطراف موجبة", "ΣVB = -Σ(I·R)", "صفر = ΣVB + Σ(I·R)", "تعتمد على المقاومة النوعية"], ans: 0, hint: "💡 هذا هو التطبيق المباشر للصيغة القياسية الموجبة." },
+      { topic: "قوانين كيرشوف", q: "98. عند حلي معادلات كيرشوف ونتج تيار قيمته بالسالب (مثال: I1 = -2A)، فهذا يعني أن:", options: ["الاتجاه المفترض للتيار خاطئ وعكس الاتجاه الفعلي، والقيمة صحيحة", "الحل الرياضي خاطئ بالكامل", "المقاومة سالبة", "البطارية تالفة"], ans: 0, hint: "💡 الإشارة السالبة للتيار في كيرشوف تعني فقط أن الاتجاه الحقيقي عكس المفترض." },
+      { topic: "قوانين كيرشوف", q: "99. النقطة التي يلتقي فيها ثلاثة أفرع توصيل أو أكثر في الدائرة الكهربية تُسمى في كيرشوف بـ:", options: ["عقدة أو نقطة تفرع (Node)", "مسار مغلق (Loop)", "مقاومة مكافئة", "قطب المصدر"], ans: 0, hint: "💡 التعريف العلمي المباشر لعقدة كيرشوف الأول." },
+      { topic: "قوانين كيرشوف", q: "100. قانون أوم للدائرة المغلقة يُعتبر حالة خاصة من قانون كيرشوف الثاني عندما تحتوى الدائرة على:", options: ["مسار مغلق واحد وفرع رئيسي واحد", "عشرة أفرع متوازية", "ثلاث بطاريات متضادة بأفرع مختلفة", "مكثف ومحث"], ans: 0, hint: "💡 الدائرة البسيطة المكونة من مسار واحد يُطبق عليها كيرشوف 2 فتتحول مباشرة لقانون أوم I = VB / (R+r)." }
+    ];
+
+    let currentIndex = 0;
+    let score = 0;
+    let attempts = 0;
+    const userAnswers = [];
+
+    function startQuiz() {
+      const nameInput = document.getElementById('studentName');
+      if (nameInput.value.trim() === "") {
+        alert("يرجى كتابة اسمك أولاً قبل بدء الاختبار!");
+        return;
+      }
+      studentName = nameInput.value.trim();
+      
+      document.getElementById('nameScreen').style.display = 'none';
+      document.getElementById('loadingScreen').style.display = 'block';
+      
+      playAudio('sndStart');
+
+      const startAudio = document.getElementById('sndStart');
+      let delayTime = 4000;
+      
+      if (startAudio) {
+        startAudio.onended = function() {
+          showQuizBox();
+        };
+        startAudio.onloadedmetadata = function() {
+          delayTime = startAudio.duration * 1000;
+        };
+      }
+
+      setTimeout(() => {
+        if (document.getElementById('loadingScreen').style.display !== 'none') {
+          showQuizBox();
+        }
+      }, delayTime + 500);
+    }
+
+    function showQuizBox() {
+      document.getElementById('loadingScreen').style.display = 'none';
+      document.getElementById('headerBar').style.display = 'flex';
+      document.getElementById('quizBox').style.display = 'block';
+      renderQuestion();
+    }
+
+    function renderQuestion() {
+      attempts = 0;
+      document.getElementById('nextBtn').style.display = 'none';
+      document.getElementById('hintBox').style.display = 'none';
+      
+      const q = rawQuestions[currentIndex];
+      document.getElementById('currentQ').innerText = currentIndex + 1;
+      document.getElementById('score').innerText = score;
+      document.getElementById('topicTag').innerText = q.topic;
+      document.getElementById('qText').innerText = q.q;
+
+      const container = document.getElementById('optionsContainer');
+      container.innerHTML = '';
+
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'option-btn';
+        btn.innerText = opt;
+        btn.onclick = () => handleAnswer(idx, btn);
+        container.appendChild(btn);
+      });
+    }
+
+    function handleAnswer(selectedIdx, btnElement) {
+      const q = rawQuestions[currentIndex];
+
+      if (selectedIdx === q.ans) {
+        playAudio('sndCorrect');
+        
+        btnElement.classList.add('correct');
+        disableAllOptions();
+        
+        let earnedPoints = (attempts === 0) ? 10 : 5;
+        score += earnedPoints;
+        
+        userAnswers.push({
+          questionNum: currentIndex + 1,
+          selected: q.options[selectedIdx],
+          correct: q.options[q.ans],
+          isCorrect: true,
+          attempts: attempts + 1
+        });
+
+        document.getElementById('score').innerText = score;
+        document.getElementById('nextBtn').style.display = 'block';
+      } else {
+        if (attempts === 0) {
+          playAudio('sndWrong1');
+
+          attempts = 1;
+          btnElement.classList.add('wrong-first');
+          btnElement.disabled = true;
+
+          const hintBox = document.getElementById('hintBox');
+          hintBox.innerHTML = `⚠️ <b>إجابة خاطئة! لديك فرصة ثانية.</b><br>${q.hint}`;
+          hintBox.style.display = 'block';
+        } else {
+          playAudio('sndWrong2');
+
+          btnElement.classList.add('wrong-first');
+          disableAllOptions();
+          
+          const buttons = document.querySelectorAll('.option-btn');
+          buttons[q.ans].classList.add('correct');
+
+          userAnswers.push({
+            questionNum: currentIndex + 1,
+            selected: q.options[selectedIdx],
+            correct: q.options[q.ans],
+            isCorrect: false,
+            attempts: 2
+          });
+
+          const hintBox = document.getElementById('hintBox');
+          hintBox.innerHTML = `❌ <b>للأسف إجابة خاطئة ثانية!</b> الإجابة الصحيحة هي: <b>${q.options[q.ans]}</b>`;
+          hintBox.style.display = 'block';
+
+          document.getElementById('nextBtn').style.display = 'block';
+        }
+      }
+    }
+
+    function disableAllOptions() {
+      const buttons = document.querySelectorAll('.option-btn');
+      buttons.forEach(b => b.disabled = true);
+    }
+
+    function nextQuestion() {
+      currentIndex++;
+      if (currentIndex < rawQuestions.length) {
+        renderQuestion();
+      } else {
+        showFinalResults();
+      }
+    }
+
+    function sendExamResultsToFormspree(finalScore, percentage, reportSummary) {
+      fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          studentName: studentName,
+          examTitle: "اختبار الفيزياء الفولاذي - الفصل الأول كاملاً",
+          finalScore: `${finalScore} / 1000`,
+          percentage: `${percentage}%`,
+          detailedAnswers: reportSummary
+        })
+      }).catch(err => console.log("Formspree Error:", err));
+    }
+
+    function showFinalResults() {
+      playAudio('sndFinal');
+
+      document.getElementById('headerBar').style.display = 'none';
+      const maxScore = 1000;
+      const percentage = ((score / maxScore) * 100).toFixed(1);
+      
+      let tableRows = userAnswers.map(ans => `
+        <tr>
+          <td>س${ans.questionNum}</td>
+          <td>${ans.selected}</td>
+          <td>${ans.correct}</td>
+          <td class="${ans.isCorrect ? 'status-pass' : 'status-fail'}">
+            ${ans.isCorrect ? (ans.attempts === 1 ? '✅ صح (من أول مرة)' : '⚠️ صح (فرصة ثانية)') : '❌ خطأ'}
+          </td>
+        </tr>
+      `).join('');
+
+      let reportSummaryForEmail = userAnswers.map(a => `س${a.questionNum}: اختار (${a.selected}) | الصح (${a.correct}) | ${a.isCorrect ? 'صح' : 'خطأ'}`).join(" | ");
+
+      const quizBox = document.getElementById('quizBox');
+      quizBox.innerHTML = `
+        <div class="results-card">
+          <div class="results-title">🎓 النتيجة النهائية لـ: ${studentName}</div>
+          <p style="font-size: 1.4rem; margin-bottom: 8px;">مجموع النقاط: <b>${score}</b> / ${maxScore}</p>
+          <p style="font-size: 1.2rem; color: #38bdf8; font-weight: bold; margin-bottom: 20px;">النسبة المئوية: ${percentage}%</p>
+          
+          <h3 style="text-align: right; color: #f1f5f9; margin-top: 15px;">📊 كشف الإجابات التفصيلي:</h3>
+          <table class="report-table">
+            <thead>
+              <tr>
+                <th>السؤال</th>
+                <th>إجابتك</th>
+                <th>الإجابة الصحيحة</th>
+                <th>الحالة</th>
+              </tr>
+            </thead>
+            <tbody>
+              ${tableRows}
+            </tbody>
+          </table>
+
+          <button class="next-btn" style="display:block; margin-top:25px;" onclick="location.reload()">إعادة الاختبار 🔄</button>
+        </div>
+      `;
+
+      sendExamResultsToFormspree(score, percentage, reportSummaryForEmail);
+    }
+
+    const canvas = document.getElementById('starsCanvas');
+    const ctx = canvas.getContext('2d');
+    let width = canvas.width = window.innerWidth;
+    let height = canvas.height = window.innerHeight;
+
+    window.onresize = () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    };
+
+    const stars = Array.from({ length: 90 }, () => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      r: Math.random() * 2 + 0.5,
+      alpha: Math.random()
+    }));
+
+    function drawScene() {
+      ctx.clearRect(0, 0, width, height);
+      stars.forEach(s => {
+        ctx.fillStyle = `rgba(56, 189, 248, ${s.alpha})`;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+        ctx.fill();
+        s.alpha += (Math.random() - 0.5) * 0.02;
+        if (s.alpha < 0.1) s.alpha = 0.1;
+        if (s.alpha > 0.9) s.alpha = 0.9;
+      });
+      requestAnimationFrame(drawScene);
+    }
+
+    drawScene();
+  </script>
+</body>
+</html>
